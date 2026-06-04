@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="EasyBook Travel - Solusi terbaik untuk booking tiket dan paket wisata Anda.">
+    <meta name="keywords" content="travel, wisata, liburan, booking hotel, tiket pesawat">
+    <title>EasyBook Travel | Jelajahi Dunia Bersama Kami</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Hero Section dengan background image */
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        /* Hover effect untuk card */
+        .hover-up {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-up:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Back to top button */
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        #backToTop:hover {
+            background-color: #2563eb;
+        }
+
+        /* Modal animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-enter {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                background-attachment: scroll;
+            }
+        }
+
+        /* Navbar transition */
+        header {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                        <i class="fa-solid fa-earth-americas"></i> EasyBook
+                    </a>
+                </div>
+                <!-- Menu Navigasi Desktop -->
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#home" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a></li>
+                        <li><a href="#about" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang</a></li>
+                        <li><a href="#services" class="text-gray-600 hover:text-blue-600 font-medium transition">Paket</a></li>
+                        <li><a href="#gallery" class="text-gray-600 hover:text-blue-600 font-medium transition">Galeri</a></li>
+                        <li><a href="#contact" class="text-gray-600 hover:text-blue-600 font-medium transition">Kontak</a></li>
+                    </ul>
+                </nav>
+                <!-- Tombol CTA -->
+                <div class="hidden md:block">
+                    <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-blue-700 transition shadow-lg">Daftar Sekarang</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t shadow-md">
+            <ul class="px-2 pt-2 pb-3 space-y-1">
+                <li><a href="#home" class="block px-3 py-2 text-gray-600 font-medium hover:bg-gray-50 rounded">Beranda</a></li>
+                <li><a href="#about" class="block px-3 py-2 text-gray-600 font-medium hover:bg-gray-50 rounded">Tentang</a></li>
+                <li><a href="#services" class="block px-3 py-2 text-gray-600 font-medium hover:bg-gray-50 rounded">Paket</a></li>
+                <li><a href="#gallery" class="block px-3 py-2 text-gray-600 font-medium hover:bg-gray-50 rounded">Galeri</a></li>
+                <li><a href="#contact" class="block px-3 py-2 text-gray-600 font-medium hover:bg-gray-50 rounded">Kontak</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero-section min-h-screen flex items-center justify-center relative pt-20">
+        <div class="container mx-auto px-4 text-center z-10" data-aos="fade-up" data-aos-duration="1000">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">Jelajahi Dunia Bersama EasyBook</h1>
+            <p class="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">Temukan destinasi impian Anda, booking hotel, dan tiket perjalanan hanya dengan beberapa klik.</p>
+            
+            <!-- Booking Form Bar -->
+            <div class="bg-white p-4 md:p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col md:flex-row gap-4 items-center">
+                <div class="w-full md:w-1/3 flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <i class="fa-solid fa-location-dot text-blue-500 mr-3"></i>
+                    <input type="text" id="search-dest" placeholder="Mau ke mana?" class="bg-transparent w-full focus:outline-none text-gray-700">
+                </div>
+                <div class="w-full md:w-1/3 flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <i class="fa-regular fa-calendar text-blue-500 mr-3"></i>
+                    <input type="date" id="search-date" class="bg-transparent w-full focus:outline-none text-gray-700">
+                </div>
+                <div class="w-full md:w-1/3 flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <i class="fa-solid fa-user-group text-blue-500 mr-3"></i>
+                    <select id="search-guest" class="bg-transparent w-full focus:outline-none text-gray-700">
+                        <option>1 Dewasa, 0 Anak</option>
+                        <option>2 Dewasa, 0 Anak</option>
+                        <option>2 Dewasa, 2 Anak</option>
+                    </select>
+                </div>
+                <button onclick="handleSearch()" class="w-full md:w-auto bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">Cari</button>
+            </div>
+            <div id="search-alert" class="hidden mt-4 text-red-300 font-semibold bg-red-900/50 inline-block px-4 py-2 rounded-full"></div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="py-16 bg-white relative -mt-10 z-20">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover-up" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-2xl">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Proses Cepat</h3>
+                    <p class="text-gray-600">Booking instan tanpa ribet. Konfirmasi langsung masuk ke email Anda dalam hitungan detik.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover-up" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-2xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Transaksi Aman</h3>
+                    <p class="text-gray-600">Sistem pembayaran kami menggunakan enkripsi SSL tingkat tinggi menjamin keamanan data Anda.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover-up" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-2xl">
+                        <i class="fa-regular fa-face-smile"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Mudah Digunakan</h3>
+                    <p class="text-gray-600">Tampilan user-friendly yang dirancang untuk memudahkan semua kalangan mencari tiket.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2" data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tentang Perusahaan" class="rounded-2xl shadow-xl w-full">
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <h4 class="text-blue-600 font-bold mb-2 tracking-wider uppercase text-sm">Tentang Kami</h4>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-800">Mitra Perjalanan Terpercaya Anda Sejak 2015</h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed">EasyBook adalah agen perjalanan digital terkemuka yang berdedikasi memberikan pengalaman liburan tak terlupakan. Visi kami adalah menghubungkan dunia dengan mudah, sementara misi kami adalah menyediakan layanan booking yang murah, aman, dan transparan.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-gray-700"><i class="fa-solid fa-check text-green-500 mr-3"></i> Jaringan hotel luas di seluruh dunia</li>
+                        <li class="flex items-center text-gray-700"><i class="fa-solid fa-check text-green-500 mr-3"></i> Harga transparan tanpa biaya tersembunyi</li>
+                        <li class="flex items-center text-gray-700"><i class="fa-solid fa-check text-green-500 mr-3"></i> Dukungan pelanggan 24/7</li>
+                    </ul>
+                    <a href="#services" class="inline-block bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition">Lihat Layanan Kami</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h4 class="text-blue-600 font-bold mb-2 tracking-wider uppercase text-sm">Destinasi Populer</h4>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Pilih Paket Perjalanan Anda</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 - Bali -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Bali" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">Domestik</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 4.8</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Eksplorasi Bali 4H3M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Nikmati keindahan pantai Kuta, budaya Ubud, dan sunset eksotis di Tanah Lot.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 3.500.000</p></div>
+                            <button onclick="openBooking('Eksplorasi Bali 4H3M', 'Rp 3.500.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 - Labuan Bajo -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Labuan Bajo" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">Domestik</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 4.9</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Sailing Komodo 3H2M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Liveaboard di kapal Phinisi, trekking Pulau Padar, dan melihat Komodo langsung.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 4.200.000</p></div>
+                            <button onclick="openBooking('Sailing Komodo 3H2M', 'Rp 4.200.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 - Raja Ampat -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://images.unsplash.com/photo-1540126085603-5182a3ee04d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Raja Ampat" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">Domestik</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 5.0</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Surga Raja Ampat 5H4M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Diving dan snorkeling di perairan terindah dunia, kunjungi ikon Piaynemo.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 8.500.000</p></div>
+                            <button onclick="openBooking('Surga Raja Ampat 5H4M', 'Rp 8.500.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 - Paris -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1498307833015-e7b400441eb8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Paris" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-purple-100 text-purple-600 text-xs font-bold px-3 py-1 rounded-full">Internasional</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 4.9</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Romantisnya Paris 5H4M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Tour keliling menara Eiffel, museum Louvre, dan susur sungai Seine di malam hari.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 15.000.000</p></div>
+                            <button onclick="openBooking('Romantisnya Paris 5H4M', 'Rp 15.000.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 5 - Tokyo -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="500">
+                    <img src="https://images.unsplash.com/photo-1480796927426-f609979314bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tokyo" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-purple-100 text-purple-600 text-xs font-bold px-3 py-1 rounded-full">Internasional</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 4.8</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Jepang Musim Semi 6H5M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Saksikan mekarnya bunga Sakura, kuliner di Osaka, dan budaya tradisional Tokyo.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 18.500.000</p></div>
+                            <button onclick="openBooking('Jepang Musim Semi 6H5M', 'Rp 18.500.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 6 - Turki -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover-up border border-gray-100" data-aos="fade-up" data-aos-delay="600">
+                    <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Turki" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-purple-100 text-purple-600 text-xs font-bold px-3 py-1 rounded-full">Internasional</span>
+                            <span class="text-gray-500 text-sm"><i class="fa-solid fa-star text-yellow-400"></i> 5.0</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Pesona Turki 7H6M</h3>
+                        <p class="text-gray-600 text-sm mb-4">Naik balon udara di Cappadocia, jelajah Istanbul, dan Blue Mosque yang megah.</p>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                            <div><p class="text-xs text-gray-500">Mulai dari</p><p class="text-lg font-bold text-blue-600">Rp 14.800.000</p></div>
+                            <button onclick="openBooking('Pesona Turki 7H6M', 'Rp 14.800.000')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Booking</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section id="gallery" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h4 class="text-blue-600 font-bold mb-2 tracking-wider uppercase text-sm">Dokumentasi</h4>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Galeri Perjalanan</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="100"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="200"><img src="https://images.unsplash.com/photo-1518684079-3c830dcef090?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="300"><img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="400"><img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="500"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+                <div class="overflow-hidden rounded-xl" data-aos="zoom-in" data-aos-delay="600"><img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL SECTION -->
+    <section class="py-20 bg-blue-600 text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up"><h2 class="text-3xl md:text-4xl font-bold">Apa Kata Klien Kami?</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex text-yellow-400 mb-4"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="text-gray-100 italic mb-6">"Pengalaman liburan ke Bali sangat luar biasa berkat EasyBook. Jadwal rapi, hotel bagus, dan guide sangat ramah."</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full object-cover">
+                        <div><h4 class="font-bold">Siti Aisyah</h4><p class="text-sm text-blue-200">Karyawan Swasta</p></div>
+                    </div>
+                </div>
+                <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex text-yellow-400 mb-4"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="text-gray-100 italic mb-6">"Booking tiket pesawat dan hotel untuk business trip jadi sangat cepat. UI aplikasinya sangat mudah dimengerti."</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full object-cover">
+                        <div><h4 class="font-bold">Andi Pratama</h4><p class="text-sm text-blue-200">Pengusaha</p></div>
+                    </div>
+                </div>
+                <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex text-yellow-400 mb-4"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                    <p class="text-gray-100 italic mb-6">"Harga yang ditawarkan jauh lebih murah dibanding agen lain. Proses refund juga sangat cepat saat saya harus batal berangkat."</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full object-cover">
+                        <div><h4 class="font-bold">Diana Kusuma</h4><p class="text-sm text-blue-200">Traveler</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
+                <div class="md:w-2/5 bg-blue-600 text-white p-10">
+                    <h3 class="text-3xl font-bold mb-2">Hubungi Kami</h3>
+                    <p class="text-blue-100 mb-8">Punya pertanyaan seputar paket wisata? Jangan ragu mengirim pesan.</p>
+                    <div class="space-y-6">
+                        <div class="flex gap-4"><i class="fa-solid fa-location-dot mt-1 text-xl"></i><p>Jl. Jendral Sudirman No. 45<br>Jakarta Selatan, 12190</p></div>
+                        <div class="flex gap-4"><i class="fa-solid fa-phone text-xl"></i><p>+62 812 3456 7890</p></div>
+                        <div class="flex gap-4"><i class="fa-solid fa-envelope text-xl"></i><p>hello@easybook.com</p></div>
+                    </div>
+                    <div class="mt-12 flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white hover:text-blue-600 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white hover:text-blue-600 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white hover:text-blue-600 transition"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="md:w-3/5 p-10">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Kirim Pesan</h3>
+                    <div id="form-message" class="hidden mb-4 p-3 rounded-lg text-sm font-semibold"></div>
+                    <form id="contactForm" onsubmit="return validateForm(event)">
+                        <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap</label><input type="text" id="nama" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:outline-none" placeholder="Masukkan nama Anda"></div>
+                        <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2">Alamat Email</label><input type="email" id="email" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:outline-none" placeholder="contoh@email.com"></div>
+                        <div class="mb-6"><label class="block text-gray-700 text-sm font-bold mb-2">Pesan</label><textarea id="pesan" rows="4" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:outline-none" placeholder="Tulis pesan Anda di sini..."></textarea></div>
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-lg">Kirim Pesan Sekarang</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div><a href="#" class="text-2xl font-bold text-white flex items-center gap-2 mb-4"><i class="fa-solid fa-earth-americas text-blue-500"></i> EasyBook</a><p class="text-sm text-gray-400">Membantu Anda menemukan keindahan dunia dengan mudah, murah, dan aman.</p></div>
+                <div><h4 class="text-white font-bold mb-4 uppercase text-sm">Tautan Cepat</h4><ul class="space-y-2 text-sm"><li><a href="#home" class="hover:text-blue-500">Beranda</a></li><li><a href="#about" class="hover:text-blue-500">Tentang</a></li><li><a href="#services" class="hover:text-blue-500">Paket</a></li><li><a href="#gallery" class="hover:text-blue-500">Galeri</a></li></ul></div>
+                <div><h4 class="text-white font-bold mb-4 uppercase text-sm">Dukungan</h4><ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-blue-500">FAQ</a></li><li><a href="#" class="hover:text-blue-500">Kebijakan Privasi</a></li><li><a href="#" class="hover:text-blue-500">Syarat & Ketentuan</a></li></ul></div>
+                <div><h4 class="text-white font-bold mb-4 uppercase text-sm">Hubungi Kami</h4><ul class="space-y-2 text-sm"><li>Jl. Jendral Sudirman No. 45</li><li>hello@easybook.com</li><li>+62 812 3456 7890</li></ul></div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-sm">&copy; 2026 EasyBook Travel. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP BUTTON -->
+    <button id="backToTop" onclick="scrollToTop()" class="fixed bottom-5 right-5 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- MODAL PENCARIAN -->
+    <div id="search-modal" class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center relative">
+            <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="search-loading"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600 mb-4"></i><h3 class="text-xl font-bold">Mencari Paket...</h3></div>
+            <div id="search-result" class="hidden"><div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600 text-3xl"><i class="fa-solid fa-check"></i></div><h3 class="text-xl font-bold mb-2">Paket Ditemukan!</h3><p id="search-result-text" class="text-gray-600 mb-6"></p><button onclick="closeSearchAndScroll()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full w-full">Lihat Paket</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL BOOKING -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center overflow-y-auto">
+        <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 relative my-10">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold mb-1">Form Pemesanan</h3>
+            <p class="text-gray-500 text-sm mb-6">Lengkapi data diri Anda untuk melanjutkan pemesanan.</p>
+            <div id="booking-message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+            <form id="bookForm" onsubmit="return processBooking(event)">
+                <div class="bg-blue-50 p-4 rounded-xl mb-6">
+                    <label class="block text-xs font-bold text-blue-700 uppercase mb-2">Detail Paket</label>
+                    <input type="text" id="booking-package" class="w-full bg-white border rounded-lg px-3 py-2 font-bold mb-2" readonly>
+                    <input type="text" id="booking-price" class="w-full bg-white border rounded-lg px-3 py-2 text-blue-700 font-bold" readonly>
+                </div>
+                <div class="mb-4"><input type="text" id="book-nama" placeholder="Nama Lengkap" class="w-full px-4 py-2 rounded-lg bg-gray-50 border focus:border-blue-500 focus:outline-none" required></div>
+                <div class="mb-4"><input type="email" id="book-email" placeholder="Email" class="w-full px-4 py-2 rounded-lg bg-gray-50 border focus:border-blue-500 focus:outline-none" required></div>
+                <div class="mb-6"><input type="tel" id="book-telp" placeholder="No. Telepon" class="w-full px-4 py-2 rounded-lg bg-gray-50 border focus:border-blue-500 focus:outline-none" required></div>
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition"><i class="fa-solid fa-lock"></i> Konfirmasi Pesanan</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inisialisasi AOS
+        AOS.init({
+            once: true,
+            offset: 100,
+            duration: 800,
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        if (btn) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-lg');
+            } else {
+                header.classList.remove('shadow-lg');
+            }
+        });
+
+        // Search Function
+        function handleSearch() {
+            const dest = document.getElementById('search-dest').value.trim();
+            const date = document.getElementById('search-date').value;
+            const guest = document.getElementById('search-guest').value;
+            const alertBox = document.getElementById('search-alert');
+
+            if (dest === "" || date === "") {
+                alertBox.textContent = "Mohon isi Tujuan (Destinasi) dan Tanggal berangkat.";
+                alertBox.classList.remove('hidden');
+                setTimeout(() => alertBox.classList.add('hidden'), 3000);
+                return;
+            }
+
+            const modal = document.getElementById('search-modal');
+            const loading = document.getElementById('search-loading');
+            const result = document.getElementById('search-result');
+            const resultText = document.getElementById('search-result-text');
+
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            loading.classList.remove('hidden');
+            result.classList.add('hidden');
+
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+                resultText.innerHTML = `Kami menemukan rute dan ketersediaan hotel di <strong>${dest}</strong> untuk keberangkatan tanggal <strong>${date}</strong> (${guest}).`;
+            }, 2000);
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+
+        function closeSearchAndScroll() {
+            closeSearchModal();
+            document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Booking Modal
+        function openBooking(paket, harga) {
+            document.getElementById('booking-package').value = paket;
+            document.getElementById('booking-price').value = harga;
+            
+            document.getElementById('bookForm').reset();
+            document.getElementById('booking-message').classList.add('hidden');
+            
+            const modal = document.getElementById('booking-modal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+
+        // Process Booking
+        function processBooking(event) {
+            event.preventDefault();
+
+            const btnSubmit = document.querySelector('#bookForm button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+
+            btnSubmit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memproses...';
+            btnSubmit.disabled = true;
+
+            const dataBooking = {
+                id: "BKG" + Math.floor(Math.random() * 100000),
+                paket: document.getElementById('booking-package').value,
+                harga: document.getElementById('booking-price').value,
+                nama: document.getElementById('book-nama').value,
+                email: document.getElementById('book-email').value,
+                telp: document.getElementById('book-telp').value,
+                tanggalPesan: new Date().toLocaleDateString('id-ID')
+            };
+
+            setTimeout(() => {
+                let savedBookings = JSON.parse(localStorage.getItem('easyBookData')) || [];
+                savedBookings.push(dataBooking);
+                localStorage.setItem('easyBookData', JSON.stringify(savedBookings));
+
+                const msgBox = document.getElementById('booking-message');
+                msgBox.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                msgBox.classList.add('bg-green-100', 'text-green-700');
+                msgBox.innerHTML = `<strong>Berhasil!</strong> Pesanan dengan ID ${dataBooking.id} telah tersimpan.`;
+
+                btnSubmit.innerHTML = '<i class="fa-solid fa-check"></i> Selesai';
+
+                setTimeout(() => {
+                    closeBookingModal();
+                    btnSubmit.innerHTML = originalText;
+                    btnSubmit.disabled = false;
+                }, 3000);
+            }, 1500);
+
+            return false;
+        }
+
+        // Contact Form Validation
+        function validateForm(event) {
+            event.preventDefault();
+
+            const nama = document.getElementById('nama').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const pesan = document.getElementById('pesan').value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (nama === "") return showMessage("Mohon isi Nama Lengkap Anda.", "error");
+            if (email === "") return showMessage("Mohon isi Alamat Email Anda.", "error");
+            if (!emailPattern.test(email)) return showMessage("Format email tidak valid.", "error");
+            if (pesan === "") return showMessage("Pesan tidak boleh kosong.", "error");
+
+            showMessage("Berhasil! Pesan Anda telah terkirim.", "success");
+            document.getElementById('contactForm').reset();
+            return false;
+        }
+
+        function showMessage(msg, type) {
+            const messageDiv = document.getElementById('form-message');
+            messageDiv.textContent = msg;
+            messageDiv.classList.remove('hidden');
+
+            if (type === "error") {
+                messageDiv.classList.add('bg-red-100', 'text-red-700');
+                messageDiv.classList.remove('bg-green-100', 'text-green-700');
+            } else {
+                messageDiv.classList.add('bg-green-100', 'text-green-700');
+                messageDiv.classList.remove('bg-red-100', 'text-red-700');
+            }
+
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Back to Top
+        const backToTopBtn = document.getElementById("backToTop");
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('search-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeSearchModal();
+        });
+
+        document.getElementById('booking-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeBookingModal();
+        });
+    </script>
+</body>
+</html>
