@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyBook - Premium Admin Dashboard CRUD</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-gauge-high text-amber-500 text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-wide text-white">EasyBook <span class="text-amber-500 text-sm font-normal">Admin Panel v2</span></h1>
+            </div>
+            <a href="index.html" class="text-sm bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg transition-all flex items-center gap-2 border border-slate-600">
+                <i class="fa-solid fa-globe text-emerald-400"></i> Lihat Web Utama
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white mb-1">Pusat Kendali Data (CRUD Center)</h2>
+                <p class="text-slate-400 text-sm">Kelola data, hapus database, dan ekspor laporan secara <span class="text-emerald-400 font-semibold">Real-time</span>.</p>
+            </div>
+            <button onclick="exportTableToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 shadow-lg cursor-pointer">
+                <i class="fa-solid fa-file-excel"></i> Ekspor ke Excel (.CSV)
+            </button>
+        </div>
+
+        <div class="flex flex-wrap border-b border-slate-700 mb-6 gap-2">
+            <button onclick="switchTab('booking')" id="tab-booking" class="px-5 py-3 text-sm font-medium border-b-2 border-amber-500 text-amber-400 transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-plane-departure"></i> Pesanan Booking
+            </button>
+            <button onclick="switchTab('member')" id="tab-member" class="px-5 py-3 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-users"></i> Pendaftaran Member
+            </button>
+            <button onclick="switchTab('kontak')" id="tab-kontak" class="px-5 py-3 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-envelope-open-text"></i> Pesan Kontak
+            </button>
+        </div>
+
+        <div id="loading-state" class="flex flex-col items-center justify-center py-16 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
+            <i class="fa-solid fa-circle-notch fa-spin text-amber-500 text-4xl mb-4"></i>
+            <p class="text-slate-300 animate-pulse">Sinkronisasi enkripsi data Firebase...</p>
+        </div>
+
+        <div id="table-container" class="hidden bg-slate-800 rounded-xl border border-slate-700 shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table id="main-data-table" class="w-full text-left border-collapse">
+                    <thead id="table-head" class="bg-slate-750 border-b border-slate-700 text-slate-300 text-xs uppercase font-bold tracking-wider">
+                        </thead>
+                    <tbody id="table-body-rows" class="divide-y divide-slate-700 text-sm text-slate-300">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // Konfigurasi Database Firebase (Sesuai dengan akun lu)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcs415ovKAgtDgCKUr02p2G2Sc4Cv96u0",
+            authDomain: "easybook-3cb32.firebaseapp.com",
+            databaseURL: "https://easybook-3cb32-default-rtdb.firebaseio.com",
+            projectId: "easybook-3cb32",
+            storageBucket: "easybook-3cb32.firebasestorage.app",
+            messagingSenderId: "182966871696",
+            appId: "1:182966871696:web:5d4a7b0ac451c9f7879a15",
+            measurementId: "G-G07YP6S0QR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // UI Target Pointers
+        const loadingState = document.getElementById('loading-state');
+        const tableContainer = document.getElementById('table-container');
+        const tableHead = document.getElementById('table-head');
+        const tableBodyRows = document.getElementById('table-body-rows');
+
+        // Global state untuk melacak tab aktif & penampung memori data lokal
+        window.currentTab = 'booking';
+        let cacheData = {};
+
+        // Fungsi Ganti Tab Menu Panel Admin
+        window.switchTab = function(tabName) {
+            window.currentTab = tabName;
+            
+            // Set style css navigasi tombol tab aktif
+            ['booking', 'member', 'kontak'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    btn.classList.add('border-amber-500', 'text-amber-400');
+                    btn.classList.remove('border-transparent', 'text-slate-400');
+                } else {
+                    btn.classList.remove('border-amber-500', 'text-amber-400');
+                    btn.classList.add('border-transparent', 'text-slate-400');
+                }
+            });
+
+            // Muat ulang data tabel render
+            renderDatabaseTable();
+        };
+
+        // Ambil Data Live untuk 3 folder sekaligus dari Cloud Firebase Core
+        const initRealtimeSync = () => {
+            // 1. Sinkronisasi Folder pesanan_booking
+            onValue(ref(db, 'pesanan_booking'), (snapshot) => {
+                cacheData['booking'] = snapshot.val();
+                if(window.currentTab === 'booking') renderDatabaseTable();
+            });
+
+            // 2. Sinkronisasi Folder pendaftaran_member
+            onValue(ref(db, 'pendaftaran_member'), (snapshot) => {
+                cacheData['member'] = snapshot.val();
+                if(window.currentTab === 'member') renderDatabaseTable();
+            });
+
+            // 3. Sinkronisasi Folder pesan_kontak
+            onValue(ref(db, 'pesan_kontak'), (snapshot) => {
+                cacheData['kontak'] = snapshot.val();
+                if(window.currentTab === 'kontak') renderDatabaseTable();
+            });
+        };
+
+        // Fungsi Merender Struktur Data Tabel secara Dinamis
+        function renderDatabaseTable() {
+            loadingState.classList.add('hidden');
+            tableBodyRows.innerHTML = "";
+            
+            const activeData = cacheData[window.currentTab];
+
+            if (!activeData || Object.keys(activeData).length === 0) {
+                tableContainer.classList.add('hidden');
+                loadingState.classList.remove('hidden');
+                loadingState.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fa-solid fa-folder-open text-slate-500 text-4xl mb-4"></i>
+                        <p class="text-slate-400 text-sm">Tidak ada baris data di folder '${window.currentTab}' Firebase saat ini.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            tableContainer.classList.remove('hidden');
+            let nomor = 1;
+
+            // RENDER BERDASARKAN TAB YANG SEDANG DIKLIK
+            if (window.currentTab === 'booking') {
+                tableHead.innerHTML = `
+                    <tr>
+                        <th class="px-6 py-4">No</th>
+                        <th class="px-6 py-4">Nama Pelanggan</th>
+                        <th class="px-6 py-4">Kontak / Email</th>
+                        <th class="px-6 py-4">Paket Wisata</th>
+                        <th class="px-6 py-4 text-right">Harga</th>
+                        <th class="px-6 py-4 text-center">Waktu Order</th>
+                        <th class="px-6 py-4 text-center">Aksi Kendali</th>
+                    </tr>
+                `;
+
+                for (let key in activeData) {
+                    const item = activeData[key];
+                    const tr = `
+                        <tr class="hover:bg-slate-700/40 transition-colors border-b border-slate-700">
+                            <td class="px-6 py-4 text-slate-400 font-medium">${nomor++}</td>
+                            <td class="px-6 py-4 font-bold text-white">${item.nama || '-'}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col text-xs">
+                                    <span class="text-slate-200 font-semibold">${item.email || '-'}</span>
+                                    <span class="text-slate-400"><i class="fa-solid fa-phone text-[9px] text-amber-500 mr-1"></i>${item.telp || '-'}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded text-xs font-semibold">${item.paket || '-'}</span>
+                            </td>
+                            <td class="px-6 py-4 text-right font-bold text-emerald-400">${item.harga || '-'}</td>
+                            <td class="px-6 py-4 text-center text-xs text-slate-400 font-mono">${item.waktu || '-'}</td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="deleteRecord('pesanan_booking', '${key}')" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-md text-xs transition-all cursor-pointer border border-red-500/20">
+                                    <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBodyRows.insertAdjacentHTML('beforeend', tr);
+                }
+
+            } else if (window.currentTab === 'member') {
+                tableHead.innerHTML = `
+                    <tr>
+                        <th class="px-6 py-4">No</th>
+                        <th class="px-6 py-4">Nama Member</th>
+                        <th class="px-6 py-4">Email Akun</th>
+                        <th class="px-6 py-4">ID Unik Firebase</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-center">Aksi Kendali</th>
+                    </tr>
+                `;
+
+                for (let key in activeData) {
+                    const item = activeData[key];
+                    const tr = `
+                        <tr class="hover:bg-slate-700/40 transition-colors border-b border-slate-700">
+                            <td class="px-6 py-4 text-slate-400 font-medium">${nomor++}</td>
+                            <td class="px-6 py-4 font-bold text-white">${item.nama || item.username || '-'}</td>
+                            <td class="px-6 py-4 text-slate-200 font-mono text-xs">${item.email || '-'}</td>
+                            <td class="px-6 py-4 font-mono text-xs text-amber-400">${key}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-xs font-medium">Aktif</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="deleteRecord('pendaftaran_member', '${key}')" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-md text-xs transition-all cursor-pointer border border-red-500/20">
+                                    <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBodyRows.insertAdjacentHTML('beforeend', tr);
+                }
+
+            } else if (window.currentTab === 'kontak') {
+                tableHead.innerHTML = `
+                    <tr>
+                        <th class="px-6 py-4">No</th>
+                        <th class="px-6 py-4">Pengirim</th>
+                        <th class="px-6 py-4">Email</th>
+                        <th class="px-6 py-4">Isi Pesan Ulasan</th>
+                        <th class="px-6 py-4 text-center">Waktu Masuk</th>
+                        <th class="px-6 py-4 text-center">Aksi Kendali</th>
+                    </tr>
+                `;
+
+                for (let key in activeData) {
+                    const item = activeData[key];
+                    const tr = `
+                        <tr class="hover:bg-slate-700/40 transition-colors border-b border-slate-700">
+                            <td class="px-6 py-4 text-slate-400 font-medium">${nomor++}</td>
+                            <td class="px-6 py-4 font-bold text-white">${item.nama || '-'}</td>
+                            <td class="px-6 py-4 text-slate-300">${item.email || '-'}</td>
+                            <td class="px-6 py-4 text-slate-200 italic">"${item.pesan || item.ulasan || item.rating || '-'}"</td>
+                            <td class="px-6 py-4 text-center text-xs text-slate-400 font-mono">${item.waktuInbound || item.waktu || '-'}</td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="deleteRecord('pesan_kontak', '${key}')" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-md text-xs transition-all cursor-pointer border border-red-500/20">
+                                    <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBodyRows.insertAdjacentHTML('beforeend', tr);
+                }
+            }
+        }
+
+        // FUNGSI UTAMA UNTUK MENGHAPUS DATA DARI WEB KE FIREBASE (CRUD - DELETE)
+        window.deleteRecord = function(folderNode, recordId) {
+            if (confirm(`Apakah Anda yakin ingin menghapus record ini dari folder '${folderNode}' di Cloud Database?`)) {
+                const targetRef = ref(db, `${folderNode}/${recordId}`);
+                
+                remove(targetRef)
+                    .then(() => {
+                        alert("Berhasil! Data sukses dihapus langsung dari Cloud Firebase secara real-time.");
+                    })
+                    .catch((error) => {
+                        console.error("Gagal menghapus data: ", error);
+                        alert("Gagal menghapus data. Cek koneksi internet.");
+                    });
+            }
+        };
+
+        // Jalankan sinkronisasi awal saat web dibuka
+        initRealtimeSync();
+    </script>
+
+    <script>
+        function exportTableToCSV() {
+            const table = document.getElementById("main-data-table");
+            let csvContent = [];
+            const rows = table.querySelectorAll("tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cols = row.querySelectorAll("th, td");
+                let rowData = [];
+                
+                // Ambil data kolom (lewati kolom terakhir berisi tombol 'Aksi Kendali')
+                for (let j = 0; j < cols.length - 1; j++) {
+                    let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
+                    if (text.includes(",")) {
+                        text = `"${text}"`;
+                    }
+                    rowData.push(text);
+                }
+                csvContent.push(rowData.join(","));
+            }
+            
+            // Format BOM agar Excel bisa membaca karakter spesial/simbol mata uang rupiah dengan benar
+            const csvString = "\uFEFF" + csvContent.join("\n");
+            const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            const tanggal = new Date().toISOString().slice(0,10);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Laporan_EasyBook_${window.currentTab}_${tanggal}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
